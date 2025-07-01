@@ -72,13 +72,13 @@ router.get('/', async (req, res) => {
                         await sock.sendMessage(
                             sock.user.id,
                             {
-                                text: '*Hello there JawadTechX User! \ud83d\udc4b\ud83c\udffb* \n\n> Do not share your session id with anyone. use it only for bot deploy.\n\n *Thanks for using JawadTechX Bots \ud83c\uddf5\ud83c\uddf0* \n\n> Join WhatsApp Channel :- ⤵️\n \nhttps://whatsapp.com/channel/0029VatOy2EAzNc2WcShQw1j\n\n _Dont forget to give star to repos ⬇️_ \n\n- *JAWAD-MD Repository ✅* \n\nhttps://github.com/JawadTechXD/JAWAD-MD\n\n- *KHAN-MD Repository ✅*\n\nhttps://github.com/JawadYT36/KHAN-MD\n\n> *Powered BY JawadTechX* \ud83d\udda4'
+                                text: '*Hello there 𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟 User! \ud83d\udc4b\ud83c\udffb* \n\n> Do not share your session id with anyone. use it only for bot deploy.\n\n *Thanks for using 𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟 Bots \ud83c\uddf5\ud83c\uddf0* \n\n> Join WhatsApp Channel :- ⤵️\n \nhttps://whatsapp.com/channel/0029Vb5dDVO59PwTnL86j13J\n\n _Dont forget to give star to repos ⬇️_ \n\n- *DARKZONE-MD Repository ✅* \n\nhttps://github.com/DARKZONE-MD/DARKZONE-MD\n\n- *DARKZONE-MD Repository ✅*\n\nhttps://github.com/DARKZONE-MD/DARKZONE-MD\n\n> *Powered BY 𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟* \ud83d\udda4'
                             },
                             { quoted: code }
                         );
                     } catch (e) {
                         let ddd = sock.sendMessage(sock.user.id, { text: e });
-                        let desc = `*Don't Share with anyone this code use for deploying JAWAD MD*\n\n ◦ *Github:* https://github.com/JawadTechXD/JAWAD-MD`;
+                        let desc = `*Don't Share with anyone this code use for deploying DARKZONE MD*\n\n ◦ *Github:* https://github.com/DARKZONE-MD/DARKZONE-MD`;
                         await sock.sendMessage(sock.user.id, { text: desc }, { quoted: ddd });
                     }
                     await delay(10);
