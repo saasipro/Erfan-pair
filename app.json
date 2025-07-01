@@ -1,9 +1,9 @@
 
-    "name": "JawadTech Web Pair",
+    "name": "erfan Web Pair",
     "description": "Web Session Generator",
-    "logo": "https://files.catbox.moe/6f05ah.jpg",
-    "repository": "https://github.com/JawadTechX/WEB-PAIR",
-    "keywords": ["JawadTechX "],
+    "logo": "https://files.catbox.moe/r2ncqh",
+    "repository": "https://github.com/saasipro/Erfan-pair",
+    "keywords": ["ERFAN "],
     "success_url": "/", 
     "buildpacks": [{ "url": "https://github.com/heroku/heroku-buildpack-nodejs#latest" } ],
     "env": {      
