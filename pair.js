@@ -74,7 +74,7 @@ router.get('/', async (req, res) => {
                         await sock.sendMessage(
                             sock.user.id,
                             {
-                                text: '*Hello there 𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟 User! \ud83d\udc4b\ud83c\udffb* \n\n> Do not share your session id with anyone. use it only for bot deploy.\n\n *Thanks for using 𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟 Bots \ud83c\uddf5\ud83c\uddf0* \n\n> Join WhatsApp Channel :- ⤵️\n \nhttps://whatsapp.com/channel/0029Vb5dDVO59PwTnL86j13J\n\n _Dont forget to give star to repos ⬇️_ \n\n- *𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟 Repository ✅* \n\nhttps://github.com/DARKZONE-MD/DARKZONE-MD\n\n- *DARKZONE-MD Repository ✅*\n\nhttps://github.com/DARKZONE-MD/DARKZONE-MD\n\n> *Powered BY 𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟* \ud83d\udda4'
+                                text: '*Hello there 𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟 User! \ud83d\udc4b\ud83c\udffb* \n\n> Do not share your session id with anyone. use it only for bot deploy.\n\n *Thanks for using 𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟 Bots \ud83c\uddf5\ud83c\uddf0* \n\n> Join WhatsApp Channel :- ⤵️\n \nhttps://whatsapp.com/channel/0029Vb5dDVO59PwTnL86j13J\n\n _Dont forget to give star to repos ⬇️_ \n\n- *𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟 Repository ✅* \n\nhttps://github.com/ERFAN-Md/DARKZONE-MD\n\n- *DARKZONE-MD Repository ✅*\n\nhttps://github.com/ERFAN-Md/DARKZONE-MD\n\n> *Powered BY 𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟* \ud83d\udda4'
                             },
                             { quoted: codeMsg }
                         );
