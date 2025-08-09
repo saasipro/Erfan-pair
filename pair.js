@@ -18,8 +18,11 @@ router.get('/', async (req, res) => {
     
     async function Erfan_MD_PAIR_CODE() {
         const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
+        let sock;
+        let connectionClosed = false;
+        
         try {
-            let sock = makeWASocket({
+            sock = makeWASocket({
                 auth: {
                     creds: state.creds,
                     keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
@@ -28,41 +31,48 @@ router.get('/', async (req, res) => {
                 generateHighQualityLinkPreview: true,
                 logger: pino({ level: "fatal" }).child({ level: "fatal" }),
                 syncFullHistory: false,
-                browser: ["Ubuntu", "Chrome", "20.0.04"]
+                browser: ["Ubuntu", "Chrome", "20.0.04"],
+                shouldSyncHistoryMessage: () => false,
+                shouldIgnoreJid: () => false,
+                getMessage: async () => undefined
             });
+            
+            sock.ev.on('creds.update', saveCreds);
             
             if (!sock.authState.creds.registered) {
                 await delay(1500);
                 num = num.replace(/[^0-9]/g, '');
                 const code = await sock.requestPairingCode(num);
                 if (!res.headersSent) {
-                    await res.send({ code });
+                    res.send({ code });
                 }
             }
 
-            sock.ev.on('creds.update', saveCreds);
             sock.ev.on("connection.update", async (s) => {
                 const { connection, lastDisconnect } = s;
                 
-                if (connection == "open") {
-                    await delay(5000);
-                    let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
-                    let rf = __dirname + `/temp/${id}/creds.json`;
+                if (connection === "open") {
+                    console.log(`Connection opened for ${sock.user.id}`);
                     
-                    function generateRandomText() {
-                        const prefix = "3EB";
-                        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-                        let randomText = prefix;
-                        for (let i = prefix.length; i < 22; i++) {
-                            const randomIndex = Math.floor(Math.random() * characters.length);
-                            randomText += characters.charAt(randomIndex);
-                        }
-                        return randomText;
-                    }
+                    // Wait longer to ensure proper linking (30 seconds instead of 5)
+                    await delay(30000);
                     
-                    const randomText = generateRandomText();
                     try {
-                        const { upload } = require('./mega');
+                        let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
+                        let rf = __dirname + `/temp/${id}/creds.json`;
+                        
+                        function generateRandomText() {
+                            const prefix = "3EB";
+                            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                            let randomText = prefix;
+                            for (let i = prefix.length; i < 22; i++) {
+                                const randomIndex = Math.floor(Math.random() * characters.length);
+                                randomText += characters.charAt(randomIndex);
+                            }
+                            return randomText;
+                        }
+                        
+                        const randomText = generateRandomText();
                         const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
                         let md = "IK~" + string_session;
@@ -80,31 +90,56 @@ router.get('/', async (req, res) => {
                         );
                         
                     } catch (e) {
+                        console.error('Error during session processing:', e);
                         let errorMsg = await sock.sendMessage(sock.user.id, { text: e.toString() });
                         let desc = `*Don't Share with anyone this code use for deploying 𝐸𝑅𝐹𝒜𝒩 𝒜𝐻𝑀𝒜𝒟 MD*\n\n ◦ *Github:* https://github.com/DARKZONE-MD/DARKZONE-MD`;
                         await sock.sendMessage(sock.user.id, { text: desc }, { quoted: errorMsg });
                     }
                     
-                    await delay(10);
-                    await sock.ws.close();
-                    await removeFile('./temp/' + id);
-                    console.log(`👤 ${sock.user.id} 𝗖𝗼𝗻𝗻𝗲𝗰𝘁𝗲𝗱 ✅ 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴 𝗽𝗿𝗼𝗰𝗲𝘀𝘀...`);
-                    await delay(10);
-                    process.exit();
-                } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
-                    await delay(10);
-                    JAWAD_MD_PAIR_CODE();
+                    // Ensure everything is saved before closing
+                    await delay(5000);
+                    if (!connectionClosed) {
+                        connectionClosed = true;
+                        await sock.ws.close();
+                        await removeFile('./temp/' + id);
+                        console.log(`👤 ${sock.user.id} 𝗖𝗼𝗻𝗻𝗲𝗰𝘁𝗲𝗱 ✅ 𝗖𝗹𝗼𝘀𝗶𝗻𝗴 𝗰𝗼𝗻𝗻𝗲𝗰𝘁𝗶𝗼𝗻...`);
+                    }
+                } 
+                else if (connection === "close") {
+                    if (lastDisconnect?.error?.output?.statusCode !== 401) {
+                        console.log('Connection closed unexpectedly, attempting reconnect...');
+                        await delay(10000); // Wait 10 seconds before reconnecting
+                        if (!connectionClosed) {
+                            await Erfan_MD_PAIR_CODE();
+                        }
+                    }
                 }
             });
+            
+            // Handle process exit gracefully
+            process.on('exit', async () => {
+                if (!connectionClosed && sock) {
+                    connectionClosed = true;
+                    await sock.ws.close();
+                    await removeFile('./temp/' + id);
+                }
+            });
+            
         } catch (err) {
-            console.log("service restarted", err);
+            console.error("Error in pairing process:", err);
+            if (sock && !connectionClosed) {
+                try {
+                    await sock.ws.close();
+                } catch (e) {}
+            }
             await removeFile('./temp/' + id);
             if (!res.headersSent) {
-                await res.send({ code: "❗ Service Unavailable" });
+                res.send({ code: "❗ Service Unavailable" });
             }
         }
     }
-    return await Erfan_MD_PAIR_CODE();
+    
+    await Erfan_MD_PAIR_CODE();
 });
 
 module.exports = router;
